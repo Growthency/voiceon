@@ -1,9 +1,8 @@
-import "./globals.css"; // CSS import thik thaka chai
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import "./globals.css";
 import ProgressBar from "@/components/ProgressBar";
 import ScrollToTop from "@/components/ScrollToTop";
-import { Toaster } from 'react-hot-toast'; // Hot Toast import korlam
+import { Toaster } from 'react-hot-toast';
+import LayoutWrapper from "@/components/LayoutWrapper"; // Amra nicher step-e eta banabo
 
 export const metadata = {
   title: "VoiceOn - World Class AI Voice Platform",
@@ -13,8 +12,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className="antialiased font-sans">
-        {/* Toaster setup: Eta notify korbe user-ke */}
+      <body className="antialiased font-sans bg-[#F8FAFC]">
         <Toaster 
           position="top-center"
           reverseOrder={false}
@@ -30,7 +28,7 @@ export default function RootLayout({ children }) {
             },
             success: {
               iconTheme: {
-                primary: '#FF8FAF', // Amader primary color
+                primary: '#FF8FAF',
                 secondary: '#fff',
               },
             },
@@ -38,10 +36,13 @@ export default function RootLayout({ children }) {
         />
         
         <ProgressBar />
-        <Navbar />
-        {children}
+        
+        {/* LayoutWrapper check korbe Navbar/Footer dekhabe kina */}
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
+
         <ScrollToTop />
-        <Footer />
       </body>
     </html>
   );

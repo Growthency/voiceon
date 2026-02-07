@@ -1,7 +1,56 @@
 "use client";
+import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabase';
+import toast from 'react-hot-toast';
 
 export default function SignupPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.target);
+    const email = formData.get('email');
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm_password');
+    const firstName = formData.get('first_name');
+    const lastName = formData.get('last_name');
+
+    // 1. Password Match Validation
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match!");
+      setLoading(false);
+      return;
+    }
+
+    // 2. Supabase Auth Signup
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          first_name: firstName,
+          last_name: lastName,
+          full_name: `${firstName} ${lastName}`,
+        },
+      },
+    });
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Account created successfully!");
+      // User-ke dashboard-e pathiye daw
+      router.push('/dashboard');
+    }
+
+    setLoading(false);
+  };
+
   return (
     <main className="relative min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6 overflow-hidden">
       {/* Background Glows */}
@@ -18,36 +67,40 @@ export default function SignupPage() {
             <p className="text-slate-400 font-bold text-xs uppercase tracking-widest mt-2">Join the future of AI speech</p>
           </div>
 
-          <form className="space-y-6">
+          <form onSubmit={handleSignup} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-2 mb-2">First Name</label>
-                <input type="text" placeholder="John" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#CCFAD6]/30 transition-all font-medium text-slate-700 shadow-sm" />
+                <input name="first_name" type="text" placeholder="John" required className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#CCFAD6]/30 transition-all font-medium text-slate-700 shadow-sm" />
               </div>
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-2 mb-2">Last Name</label>
-                <input type="text" placeholder="Doe" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#CCFAD6]/30 transition-all font-medium text-slate-700 shadow-sm" />
+                <input name="last_name" type="text" placeholder="Doe" required className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#CCFAD6]/30 transition-all font-medium text-slate-700 shadow-sm" />
               </div>
             </div>
 
             <div>
               <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-2 mb-2">Email</label>
-              <input type="email" placeholder="you@example.com" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#FF8FAF]/20 transition-all font-medium text-slate-700 shadow-sm" />
+              <input name="email" type="email" placeholder="you@example.com" required className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#FF8FAF]/20 transition-all font-medium text-slate-700 shadow-sm" />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-2 mb-2">Password</label>
-                <input type="password" placeholder="••••••••" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#FF8FAF]/20 transition-all font-medium text-slate-700 shadow-sm" />
+                <input name="password" type="password" placeholder="••••••••" required className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#FF8FAF]/20 transition-all font-medium text-slate-700 shadow-sm" />
               </div>
               <div>
                 <label className="block text-xs font-black text-slate-400 uppercase tracking-widest ml-2 mb-2">Confirm Password</label>
-                <input type="password" placeholder="••••••••" className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#FF8FAF]/20 transition-all font-medium text-slate-700 shadow-sm" />
+                <input name="confirm_password" type="password" placeholder="••••••••" required className="w-full px-6 py-4 rounded-2xl bg-white border border-slate-100 outline-none focus:ring-2 ring-[#FF8FAF]/20 transition-all font-medium text-slate-700 shadow-sm" />
               </div>
             </div>
 
-            <button className="w-full mt-4 bg-gradient-to-r from-[#FF8FAF] to-[#ffb3c6] text-white py-5 rounded-[24px] font-[1000] text-xl shadow-[0_15px_30px_-10px_rgba(255,143,175,0.5)] hover:shadow-2xl transition-all hover:-translate-y-1 active:scale-95">
-              Create My Account
+            <button 
+              type="submit"
+              disabled={loading}
+              className="w-full mt-4 bg-gradient-to-r from-[#FF8FAF] to-[#ffb3c6] text-white py-5 rounded-[24px] font-[1000] text-xl shadow-[0_15px_30px_-10px_rgba(255,143,175,0.5)] hover:shadow-2xl transition-all hover:-translate-y-1 active:scale-95 disabled:opacity-50"
+            >
+              {loading ? "Creating Account..." : "Create My Account"}
             </button>
           </form>
 
