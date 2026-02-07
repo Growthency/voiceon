@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import ProgressBar from "@/components/ProgressBar";
 import ScrollToTop from "@/components/ScrollToTop";
+import CursorFollower from "@/components/CursorFollower"; // Cursor component-ta import korlam
 
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
@@ -13,12 +14,17 @@ export default function LayoutWrapper({ children }) {
 
   return (
     <>
-      {/* ProgressBar ebong ScrollToTop shob page-e thakbe */}
+      {/* Magic Cursor Ball - Shob jaygay thakbe */}
+      <CursorFollower />
+
+      {/* ProgressBar top-e thakbe */}
       <ProgressBar />
       
       {!isDashboard && <Navbar />}
       
-      <main>{children}</main>
+      <main className="min-h-screen">
+        {children}
+      </main>
       
       <ScrollToTop />
 
