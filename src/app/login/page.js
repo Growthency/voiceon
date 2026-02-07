@@ -12,7 +12,6 @@ export default function LoginPage() {
 
   useEffect(() => {
     setMounted(true);
-    // User agei login thakle sora-sori dashboard-e niye jabe
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) router.push('/dashboard');
@@ -36,23 +35,28 @@ export default function LoginPage() {
     });
 
     if (error) {
-      // Jodi mail confirm na hoy, Supabase ei message-ta dibe
       if (error.message.includes("Email not confirmed")) {
-        toast.error("Please confirm your email or disable 'Confirm Email' in Supabase.");
+        toast.error("Please confirm your email in Supabase.");
       } else {
         toast.error(error.message);
       }
       setLoading(false);
     } else {
-      toast.success("Welcome back, Commander! 🫡", {
-        duration: 4000,
-        icon: '🫡',
+      // Custom SVG Icon use korchi jate boxy error na ashe
+      toast.success("Welcome back, Commander!", {
+        duration: 3000,
+        icon: (
+          <div className="h-6 w-6 bg-[#CCFAD6] rounded-full flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="#1e293b" className="w-4 h-4">
+              <path fillRule="evenodd" d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.05-.143z" clipRule="evenodd" />
+            </svg>
+          </div>
+        ),
       });
       
-      // Forcefully pushing to dashboard
       setTimeout(() => {
-        router.replace('/dashboard');
-      }, 500);
+        router.push('/dashboard');
+      }, 800);
     }
   };
 
