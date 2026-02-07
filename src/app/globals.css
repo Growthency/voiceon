@@ -1,26 +1,41 @@
+
+
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* --- CUSTOM PREMIUM SCROLLBAR --- */
+@layer base {
+  ::-webkit-scrollbar {
+    width: 10px; /* Scrollbar-er width */
+  }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  ::-webkit-scrollbar-track {
+    background: #f8fafc; /* Track-er color amader background-er sathe milaya */
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #FF8FAF, #CCFAD6); /* Pink to Mint Gradient */
+    border-radius: 20px; /* Rounded look-er jonno */
+    border: 2px solid #f8fafc; /* Track theke ektu gap rakhar jonno */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #FF8FAF; /* Hover korle puro pink hoye jabe */
+  }
+
+  /* Firefox-er jonno (Standard) */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #FF8FAF #f8fafc;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@theme {
+  --color-primary: #FF8FAF;
+  --color-secondary: #CCFAD6;
+  --animate-bounce-slow: bounce-slow 10s infinite ease-in-out;
+
+  @keyframes bounce-slow {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
 }
